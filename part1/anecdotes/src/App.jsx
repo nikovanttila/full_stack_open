@@ -37,6 +37,7 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(Array(8).fill(0))
   const [votes, setVotes] = useState(0)
+  const [topAnecdote, setTopAnecdote] = useState(0)
 
   const handleAnecdoteClick = () => {
     //console.log("next anecdote clicked")
@@ -53,15 +54,36 @@ const App = () => {
     updatedPoints[anecdote] += 1
     setPoints(updatedPoints)
     setVotes(updatedPoints[anecdote])
+    anecdoteWithMostVotes()
     //console.log(updatedPoints)
+    //console.log(points)
+    //console.log(topAnecdote)
+  }
+
+  const anecdoteWithMostVotes = () => {
+    let max = topAnecdote
+    let index = 0
+    for (let i = 0; i < points.length; i++) { 
+      if (points[i] > max) { 
+          max = points[i]
+          index = i
+      }
+    //console.log("anecdoteWithMostVotes is run and top anexdote with index is: " + index)
+    setTopAnecdote(index)
+   }
   }
 
   return (
     <div>
-      <Anecdote anecdote={anecdotes[selected]} />
-      <Votes votes={votes} />
-      <Button handleClick={() => voteAnecdoteClick(selected)} text="vote" />
-      <Button handleClick={handleAnecdoteClick} text="next anecdote" />
+      <h1>Anecdote of the Day</h1>
+        <Anecdote anecdote={anecdotes[selected]} />
+        <Votes votes={votes} />
+        <Button handleClick={() => voteAnecdoteClick(selected)} text="vote" />
+        <Button handleClick={handleAnecdoteClick} text="next anecdote" />
+
+        <h1>Anecdote with most votes</h1>
+        <Anecdote anecdote={anecdotes[topAnecdote]} />
+        <Votes votes={points[topAnecdote]} />
     </div>
   )
 }
