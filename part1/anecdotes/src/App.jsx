@@ -1,5 +1,27 @@
 import { useState } from 'react'
 
+const Anecdote = (props) => {
+  return (
+    <div>
+      {props.anecdote}
+    </div>
+  )
+}
+
+const Votes = (props) => {
+  return (
+    <div>
+      has {props.votes} votes
+    </div>
+  )
+}
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -13,21 +35,33 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(8).fill(0))
+  const [votes, setVotes] = useState(0)
 
   const handleAnecdoteClick = () => {
+    //console.log("next anecdote clicked")
     const updatedSelected = Math.floor(Math.random() * 8)
-    console.log(updatedSelected)
+    //console.log(updatedSelected)
     setSelected(updatedSelected)
+    setVotes(points[updatedSelected])
+  }
+
+  const voteAnecdoteClick = (anecdote) => {
+    //console.log("vote clicked")
+    //console.log("current anecdote: " + anecdote + ", and its points: " + points[anecdote])
+    const updatedPoints = points
+    updatedPoints[anecdote] += 1
+    setPoints(updatedPoints)
+    setVotes(updatedPoints[anecdote])
+    //console.log(updatedPoints)
   }
 
   return (
     <div>
-      {anecdotes[selected]}
-      <div>
-        <button onClick={handleAnecdoteClick}>
-          next anecdote
-        </button>
-      </div>
+      <Anecdote anecdote={anecdotes[selected]} />
+      <Votes votes={votes} />
+      <Button handleClick={() => voteAnecdoteClick(selected)} text="vote" />
+      <Button handleClick={handleAnecdoteClick} text="next anecdote" />
     </div>
   )
 }
