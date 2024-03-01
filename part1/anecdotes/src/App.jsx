@@ -40,35 +40,27 @@ const App = () => {
   const [topAnecdote, setTopAnecdote] = useState(0)
 
   const handleAnecdoteClick = () => {
-    //console.log("next anecdote clicked")
     const updatedSelected = Math.floor(Math.random() * 8)
-    //console.log(updatedSelected)
     setSelected(updatedSelected)
     setVotes(points[updatedSelected])
   }
 
   const voteAnecdoteClick = (anecdote) => {
-    //console.log("vote clicked")
-    //console.log("current anecdote: " + anecdote + ", and its points: " + points[anecdote])
     const updatedPoints = points
     updatedPoints[anecdote] += 1
     setPoints(updatedPoints)
     setVotes(updatedPoints[anecdote])
     anecdoteWithMostVotes()
-    //console.log(updatedPoints)
-    //console.log(points)
-    //console.log(topAnecdote)
   }
 
   const anecdoteWithMostVotes = () => {
-    let max = topAnecdote
+    let max = 0
     let index = 0
     for (let i = 0; i < points.length; i++) { 
       if (points[i] > max) { 
           max = points[i]
           index = i
       }
-    //console.log("anecdoteWithMostVotes is run and top anexdote with index is: " + index)
     setTopAnecdote(index)
    }
   }
