@@ -16,17 +16,19 @@ const Filter = ({ text, onChange }) => {
     )
 }
   
-const Persons = ({ persons }) => {
+const Persons = ({ persons, deletePerson }) => {
     return (
       <ul>
-        {persons.map(person => <Person key={person.id} name={person.name} number={person.number} />)}
+        {persons.map(person => <Person key={person.id} name={person.name} number={person.number} id={person.id} deletePerson={deletePerson} />)}
       </ul>
     )
 }
   
-const Person = ({ name, number }) => {
+const Person = ({ name, number, id, deletePerson }) => {
     return (
-      <li>{name} {number}</li>
+      <li>
+        {name} {number} <button onClick={() => deletePerson(id)}> delete</button>
+      </li>
     )
 }
 

@@ -16,12 +16,23 @@ const App = () => {
       })
   }, [])
   
+  const deletePerson = (id) => {
+    const person = persons.find(person => person.id === id)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .deletePerson(id)
+        .then(deletedPerson => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
+      id: `${persons.length + 1}`
     }
     const found = persons.find((person) => person.name === newName);
     if (found) {
@@ -61,7 +72,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm onSubmit={addPerson} onNameChange={handleNameChange} nameValue={newName} onNumberChange={handleNumberChange} numberValue={newNumber} />
       <h3>Numbers</h3>
-      <Persons persons={personsToShowNew} />
+      <Persons persons={personsToShowNew} deletePerson={deletePerson} />
     </div>
   )
 }
