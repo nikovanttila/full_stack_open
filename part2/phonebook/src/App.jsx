@@ -1,65 +1,21 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-const PersonForm = ({ onSubmit, onNameChange, nameValue, onNumberChange, numberValue }) => {
-  return (
-    <form onSubmit={onSubmit}>
-      <div>name: <input value={nameValue} onChange={onNameChange} /></div>
-      <div>number: <input value={numberValue} onChange={onNumberChange} /></div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Filter = ({ text, onChange }) => {
-  return (
-    <div>{text} <input onChange={onChange} /></div>
-  )
-}
-
-const Persons = ({ persons }) => {
-  return (
-    <ul>
-      {persons.map(person => <Person key={person.id} name={person.name} number={person.number} />)}
-    </ul>
-  )
-}
-
-const Person = ({ name, number }) => {
-  return (
-    <li>{name} {number}</li>
-  )
-}
+import { PersonForm, Filter, Persons, Person } from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [personsToShow, setPersonsToShow] = useState([]);
+  const [personsToShow, setPersonsToShow] = useState('');
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
-        setPersonsToShow(response.data)
-        console.log(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'notes')
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-
+  
   const addPerson = (event) => {
     event.preventDefault()
     const nameObject = {
@@ -77,12 +33,22 @@ const App = () => {
     }
   }
 
-const filterPersonsToShow = (event) => {
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const filterPersonsToShow = (event) => {
     event.preventDefault()
-    const filter = event.target.value.toLowerCase()
-    const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter))
-    setPersonsToShow(filteredPersons)
-}
+    setPersonsToShow(event.target.value.toLowerCase())
+  }
+
+  const personsToShowNew = (personsToShow === '')
+    ? persons
+    : persons.filter(person => person.name.toLowerCase().includes(personsToShow))
 
   return (
     <div>
@@ -91,7 +57,7 @@ const filterPersonsToShow = (event) => {
       <h3>Add a new</h3>
       <PersonForm onSubmit={addPerson} onNameChange={handleNameChange} nameValue={newName} onNumberChange={handleNumberChange} numberValue={newNumber} />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShowNew} />
     </div>
   )
 }
