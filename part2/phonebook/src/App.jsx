@@ -83,7 +83,6 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
-
         })
     }
   }
