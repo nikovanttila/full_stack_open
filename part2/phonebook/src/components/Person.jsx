@@ -32,4 +32,26 @@ const Person = ({ name, number, id, deletePerson }) => {
     )
 }
 
-export { PersonForm, Filter, Persons, Person }
+const ErrorNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
+
+const SuccessNotification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='success'>
+      {message}
+    </div>
+  )
+}
+
+export { PersonForm, Filter, Persons, Person, ErrorNotification, SuccessNotification }
