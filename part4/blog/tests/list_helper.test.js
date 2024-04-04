@@ -11,7 +11,6 @@ test('dummy returns one', () => {
 
 describe('total likes', () => {
   const listWithZeroBlogs = []
-
   const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -22,7 +21,6 @@ describe('total likes', () => {
       __v: 0
     }
   ]
-
   const listWithMultipleBlogs = [
     {
       _id: '6602aa09a7e7e036cad0152f',
@@ -63,5 +61,39 @@ describe('total likes', () => {
   test('of a bigger list is calculated right', () => {
     const result = listHelper.totalLikes(listWithMultipleBlogs)
     assert.strictEqual(result, 6)
+  })
+})
+
+describe('most likes', () => {
+  const listWithMultipleBlogs = [
+    {
+      _id: '6602aa09a7e7e036cad0152f',
+      title: 'first test',
+      author: 'first author',
+      url: 'http://localhost:3003',
+      likes: 1,
+      __v: 0
+    },
+    {
+      _id: '6602b24b89302c1ee0538c9d',
+      title: 'second test',
+      author: 'second author',
+      url: 'http://localhost:3003',
+      likes: 2,
+      __v: 0
+    },
+    {
+      _id: '6602d1371824b877f91298b7',
+      title: 'third test',
+      author: 'third author',
+      url: 'http://localhost:3003',
+      likes: 3,
+      __v: 0
+    }
+  ]
+
+  test('of a bigger list of blogs is favourite blog', () => {
+    const result = listHelper.favoriteBlog(listWithMultipleBlogs)
+    assert.deepStrictEqual(result, { title: 'third test', author: 'third author', likes: 3 })
   })
 })
