@@ -35,6 +35,27 @@ test.only('blogs contain unique identifier called id', async () => {
   response.body.forEach(blog => assert.strictEqual(blog.hasOwnProperty('id'), true))
 })
 
+test.only('a valid blog  can be added ', async () => {
+  const newBlog = {
+    title: 'Aspect-Oriented Programming is Quantification and Obliviousness',
+    author: 'Robert E. Filman and Daniel P. Friedman',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/FilmanFriedman00.pdf',
+    likes: 1,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const contents = blogsAtEnd.map(n => n.title)
+  assert(contents.includes('Aspect-Oriented Programming is Quantification and Obliviousness'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
