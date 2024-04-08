@@ -78,6 +78,31 @@ test.only('value of likes will default to zero when missing', async () => {
   assert.strictEqual(addedBlog[0].likes, 0)
 })
 
+test.only('when creating blog with missing title or url, expect 400 Bad Request', async () => {
+  const newBlogWithMissingTitle = {
+    author: 'Jean-Marc Jézéque and Bertrand Meyer',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/JezequelMeyer97.pdf',
+    likes: 10
+  }
+  const newBlogWithMissingUrl = {
+    title: 'Design by Contract: The Lessons of Ariane',
+    author: 'Jean-Marc Jézéque and Bertrand Meyer',
+    likes: 10
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithMissingTitle)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithMissingUrl)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
