@@ -52,8 +52,12 @@ test.only('a valid blog  can be added ', async () => {
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-  const contents = blogsAtEnd.map(n => n.title)
-  assert(contents.includes('Aspect-Oriented Programming is Quantification and Obliviousness'))
+  const titles = blogsAtEnd.map(blog => blog.title)
+  const authors = blogsAtEnd.map(blog => blog.author)
+  const urls = blogsAtEnd.map(blog => blog.url)
+  assert(titles.includes('Aspect-Oriented Programming is Quantification and Obliviousness'))
+  assert(authors.includes('Robert E. Filman and Daniel P. Friedman'))
+  assert(urls.includes('https://homepages.cwi.nl/~storm/teaching/reader/FilmanFriedman00.pdf'))
 })
 
 after(async () => {
