@@ -35,7 +35,7 @@ test.only('blogs contain unique identifier called id', async () => {
   response.body.forEach(blog => assert.strictEqual(blog.hasOwnProperty('id'), true))
 })
 
-test.only('a valid blog  can be added ', async () => {
+test.only('a valid blog can be added', async () => {
   const newBlog = {
     title: 'Aspect-Oriented Programming is Quantification and Obliviousness',
     author: 'Robert E. Filman and Daniel P. Friedman',
@@ -58,6 +58,24 @@ test.only('a valid blog  can be added ', async () => {
   assert(titles.includes('Aspect-Oriented Programming is Quantification and Obliviousness'))
   assert(authors.includes('Robert E. Filman and Daniel P. Friedman'))
   assert(urls.includes('https://homepages.cwi.nl/~storm/teaching/reader/FilmanFriedman00.pdf'))
+})
+
+test.only('value of likes will default to zero when missing', async () => {
+  const newBlog = {
+    title: 'Design Pattern Implementation in Java and AspectJ',
+    author: 'Jan Hannemann and Gregor Kiczales',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/HannemannKiczales02.pdf'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  addedBlog = blogsAtEnd.filter(blog => blog.title === 'Design Pattern Implementation in Java and AspectJ')
+  assert.strictEqual(addedBlog[0].likes, 0)
 })
 
 after(async () => {
