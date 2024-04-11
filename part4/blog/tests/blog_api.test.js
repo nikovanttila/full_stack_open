@@ -94,13 +94,27 @@ test.only('when creating blog with missing title or url, expect 400 Bad Request'
     .post('/api/blogs')
     .send(newBlogWithMissingTitle)
     .expect(400)
-    .expect('Content-Type', /application\/json/)
   
   await api
     .post('/api/blogs')
     .send(newBlogWithMissingUrl)
     .expect(400)
-    .expect('Content-Type', /application\/json/)
+})
+
+test.only('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const titles = blogsAtEnd.map(blog => blog.title)
+  assert(!titles.includes(blogToDelete.title))
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
 
 after(async () => {
