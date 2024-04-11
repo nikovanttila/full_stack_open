@@ -117,6 +117,31 @@ test.only('a blog can be deleted', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
 
+test.only('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToModify = blogsAtStart[0]
+
+  modifiedBlog = {
+    title: blogToModify.title,
+    author: blogToModify.author,
+    url: blogToModify.url,
+    likes: blogToModify.likes + 1,
+  }
+
+  await api
+    .put(`/api/blogs/${blogToModify.id}`)
+    .send(modifiedBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const modifiedBlogAtTheEnd = blogsAtEnd.filter(blog => blog.id === blogToModify.id)[0]
+
+  assert.strictEqual(modifiedBlogAtTheEnd.title, blogToModify.title)
+  assert.strictEqual(modifiedBlogAtTheEnd.author, blogToModify.author)
+  assert.strictEqual(modifiedBlogAtTheEnd.url, blogToModify.url)
+  assert.strictEqual(modifiedBlogAtTheEnd.likes, blogToModify.likes + 1)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
