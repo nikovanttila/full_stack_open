@@ -10,15 +10,23 @@ const app = require('../app')
 
 const api = supertest(app)
 
-describe('blog tests', () => {
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  for (let blog of helper.initialBlogs) {
+    let blogObject = new Blog(blog)
+    await blogObject.save()
+  }
+})
 
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-    for (let blog of helper.initialBlogs) {
-      let blogObject = new Blog(blog)
-      await blogObject.save()
-    }
-  })
+beforeEach(async () => {
+  await User.deleteMany({})
+  for (let user of helper.initialUsers) {
+    let userObject = new User({ username: user.username, name: user.name, passwordHash: await bcrypt.hash(user.password, 10) })
+    await userObject.save()
+  }
+})
+
+describe('blog tests', () => {
 
   test.only('blogs are returned as json', async () => {
     await api
@@ -148,15 +156,6 @@ describe('blog tests', () => {
 })
 
 describe('user tests', () => {
-
-  beforeEach(async () => {
-    await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
-
-    await user.save()
-  })
 
   test.only('valid user can be added', async () => {
     const usersAtStart = await helper.usersInDb()

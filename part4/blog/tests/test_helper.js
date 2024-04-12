@@ -34,6 +34,19 @@ const initialBlogs = [
     },
   ]
 
+  const initialUsers = [
+    {
+        username: 'root',
+        name: 'Superuser',
+        password: 'validpassword'
+    },
+    {
+        username: 'artohellas',
+        name: 'Arto Hellas',
+        password: 'validpassword'
+    }
+  ]
+
 const nonExistingId = async () => {
     const blog = new Blog({ content: 'willremovethissoon' })
     await blog.save()
@@ -53,5 +66,5 @@ const usersInDb = async () => {
   }
   
 module.exports = {
-    initialBlogs, nonExistingId, blogsInDb, usersInDb,
+    initialBlogs, initialUsers, nonExistingId, blogsInDb, usersInDb,
 }
