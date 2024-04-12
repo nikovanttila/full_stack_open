@@ -189,17 +189,18 @@ describe('user tests', () => {
       password: 'validpassword',
     }
 
-    await api
+    const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-      .expect({ error: 'username or password less than 3 characters' })
+      .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
 
     const usernames = usersAtEnd.map(u => u.username)
     assert(!usernames.includes(newUser.username))
+    assert(result.body.error.includes('username or password less than 3 characters'))
   })
 
   test.only('user with invalid password cannot be added', async () => {
@@ -211,17 +212,18 @@ describe('user tests', () => {
       password: 'ip',
     }
 
-    await api
+    const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-      .expect({ error: 'username or password less than 3 characters' })
+      .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
 
     const usernames = usersAtEnd.map(u => u.username)
     assert(!usernames.includes(newUser.username))
+    assert(result.body.error.includes('username or password less than 3 characters'))
   })
 
 })
