@@ -48,6 +48,11 @@ describe('blog tests', () => {
   })
 
   test.only('a valid blog can be added', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const newBlog = {
       title: 'Aspect-Oriented Programming is Quantification and Obliviousness',
       author: 'Robert E. Filman and Daniel P. Friedman',
@@ -57,6 +62,7 @@ describe('blog tests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -73,6 +79,11 @@ describe('blog tests', () => {
   })
 
   test.only('value of likes will default to zero when missing', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const newBlog = {
       title: 'Design Pattern Implementation in Java and AspectJ',
       author: 'Jan Hannemann and Gregor Kiczales',
@@ -81,16 +92,22 @@ describe('blog tests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
-    addedBlog = blogsAtEnd.filter(blog => blog.title === 'Design Pattern Implementation in Java and AspectJ')
+    const addedBlog = blogsAtEnd.filter(blog => blog.title === 'Design Pattern Implementation in Java and AspectJ')
     assert.strictEqual(addedBlog[0].likes, 0)
   })
 
   test.only('when creating blog with missing title or url, expect 400 Bad Request', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const newBlogWithMissingTitle = {
       author: 'Jean-Marc Jézéque and Bertrand Meyer',
       url: 'https://homepages.cwi.nl/~storm/teaching/reader/JezequelMeyer97.pdf',
@@ -104,21 +121,41 @@ describe('blog tests', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newBlogWithMissingTitle)
       .expect(400)
     
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newBlogWithMissingUrl)
       .expect(400)
   })
 
   test.only('a blog can be deleted', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
+    const newBlog = {
+      title: 'Aspect-Oriented Programming is Quantification and Obliviousness',
+      author: 'Robert E. Filman and Daniel P. Friedman',
+      url: 'https://homepages.cwi.nl/~storm/teaching/reader/FilmanFriedman00.pdf',
+      likes: 1,
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', 'Bearer ' + login.body.token)
+      .send(newBlog)
+
     const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const blogToDelete = blogsAtStart.filter(blog => blog.title === 'Aspect-Oriented Programming is Quantification and Obliviousness')[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'Bearer ' + login.body.token)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -126,7 +163,7 @@ describe('blog tests', () => {
     const titles = blogsAtEnd.map(blog => blog.title)
     assert(!titles.includes(blogToDelete.title))
 
-    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
   })
 
   test.only('a blog can be updated', async () => {
@@ -158,6 +195,11 @@ describe('blog tests', () => {
 describe('user tests', () => {
 
   test.only('valid user can be added', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -168,6 +210,7 @@ describe('user tests', () => {
 
     await api
       .post('/api/users')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -180,6 +223,11 @@ describe('user tests', () => {
   })
 
   test.only('user with invalid username cannot be added', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -190,6 +238,7 @@ describe('user tests', () => {
 
     const result = await api
       .post('/api/users')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -203,6 +252,11 @@ describe('user tests', () => {
   })
 
   test.only('user with invalid password cannot be added', async () => {
+
+    const login = await api
+      .post('/api/login')
+      .send({username: 'root', password: 'validpassword'})
+
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -213,6 +267,7 @@ describe('user tests', () => {
 
     const result = await api
       .post('/api/users')
+      .set('Authorization', 'Bearer ' + login.body.token)
       .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
