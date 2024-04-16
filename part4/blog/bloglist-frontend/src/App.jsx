@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { Blog, SuccessNotification, ErrorNotification } from './components/Blog'
+import { SuccessNotification, ErrorNotification } from './components/Notification'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
@@ -77,6 +78,20 @@ const App = () => {
         })
   }
 
+  const addLike = (id) => {
+    const blog = blogs.find(blog => blog.id === id)
+    const changedBlog = { ...blog, likes: blog.likes + 1 }
+    blogService
+      .update(id, changedBlog)
+        .then(returnedBlog => {
+          setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+        })
+      .catch(error => {
+          setErrorMessage(`Like failed!`)
+          setTimeout(() => { setErrorMessage(null) }, 5000)
+        })
+  }
+
   if (user === null) {
     return (
       <div>
@@ -99,14 +114,14 @@ const App = () => {
       <SuccessNotification message={successMessage} />
       <div>
         <p>
-          {user.name} logged-in
+          {user.name} logged-in {' '}
           <button onClick={handleLogout}>logout</button>
         </p>
         <Togglable buttonLabel='create new blog' ref={blogFormRef}>
           <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeBlog={addLike} />
         )}
       </div>
     </div>

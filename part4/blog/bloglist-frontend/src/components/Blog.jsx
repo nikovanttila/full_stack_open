@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -18,21 +18,26 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
+  const addLike = (event) => {
+    event.preventDefault()
+    likeBlog(blog.id)
+  }
+
   return (
     <div style={blogStyle}>
       <div>
         <div style={hideWhenVisible}>
-          {blog.title}
+          {blog.title + ' '}
           <button onClick={toggleVisibility}>view</button>
         </div>
         <div style={showWhenVisible}>
-          {blog.title}
+          {blog.title + ' '}
           <button onClick={toggleVisibility}>cancel</button>
           <div>
             <div>{blog.url}</div>
             <div>
-              likes {blog.likes}
-              <button onClick={null}>like</button>
+              likes {blog.likes + ' '}
+              <button onClick={addLike}>like</button>
             </div>
             <div>{blog.author}</div>
           </div>
@@ -64,4 +69,4 @@ const SuccessNotification = ({ message }) => {
   )
 }
 
-export { Blog, ErrorNotification, SuccessNotification }
+export default Blog
