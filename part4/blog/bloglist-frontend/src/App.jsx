@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { Blog, SuccessNotification, ErrorNotification } from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,7 +8,8 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -45,10 +46,8 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setErrorMessage('Wrong credentials!')
+      setTimeout(() => { setErrorMessage(null) }, 5000)
     }
   }
 
@@ -60,9 +59,7 @@ const App = () => {
       setUser(null)
     } catch (exception) {
       setErrorMessage('Logout failed')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setTimeout(() => { setErrorMessage(null) }, 5000)
     }
   }
 
@@ -80,16 +77,14 @@ const App = () => {
     blogService
       .create(blogObject)
         .then(returnedBlog => {
+          setSuccessMessage(`A new blog: ${returnedBlog.title}, by author: ${returnedBlog.author} added.`)
+          setTimeout(() => { setSuccessMessage(null) }, 5000)
           setBlogs(blogs.concat(returnedBlog))
           setNewBlog({title: "", author: "", url: ""})
         })
       .catch(error => {
-          setErrorMessage(
-            `Invalid parameters`
-          )
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
+          setErrorMessage(`Invalid blog parameters!`)
+          setTimeout(() => { setErrorMessage(null) }, 5000)
         })
   }
 
@@ -109,6 +104,8 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <ErrorNotification message={errorMessage} />
+        <SuccessNotification message={successMessage} />
         <form onSubmit={handleLogin}>
           <div>username<input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/></div>
           <div>password<input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/></div>
@@ -121,6 +118,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <ErrorNotification message={errorMessage} />
+      <SuccessNotification message={successMessage} />
       <div>
         <p>
           {user.name} logged-in
