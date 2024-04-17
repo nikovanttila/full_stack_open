@@ -8,18 +8,18 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  
+
   const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -67,16 +67,16 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
-        .then(returnedBlog => {
-          setSuccessMessage(`A new blog: ${returnedBlog.title}, by author: ${returnedBlog.author} added.`)
-          setTimeout(() => { setSuccessMessage(null) }, 5000)
-          let returnedBlogNew = { ...returnedBlog, ['user']: { ['username']: user.username, ['name']: user.name } }
-          setBlogs(blogs.concat(returnedBlogNew))
-        })
+      .then(returnedBlog => {
+        setSuccessMessage(`A new blog: ${returnedBlog.title}, by author: ${returnedBlog.author} added.`)
+        setTimeout(() => { setSuccessMessage(null) }, 5000)
+        let returnedBlogNew = { ...returnedBlog, ['user']: { ['username']: user.username, ['name']: user.name } }
+        setBlogs(blogs.concat(returnedBlogNew))
+      })
       .catch(error => {
-          setErrorMessage(`Invalid blog parameters!`)
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        })
+        setErrorMessage('Invalid blog parameters!')
+        setTimeout(() => { setErrorMessage(null) }, 5000)
+      })
   }
 
   const addLike = (id) => {
@@ -84,13 +84,13 @@ const App = () => {
     const changedBlog = { ...blog, likes: blog.likes + 1 }
     blogService
       .update(id, changedBlog)
-        .then(returnedBlog => {
-          setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-        })
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
       .catch(error => {
-          setErrorMessage(`Like failed!`)
-          setTimeout(() => { setErrorMessage(null) }, 5000)
-        })
+        setErrorMessage('Like failed!')
+        setTimeout(() => { setErrorMessage(null) }, 5000)
+      })
   }
 
   const removeBlog = (id) => {
@@ -102,7 +102,7 @@ const App = () => {
           setBlogs(blogs.filter(blog => blog.id !== id))
         })
         .catch(error => {
-          setErrorMessage(`Removing failed!`)
+          setErrorMessage('Removing failed!')
           setTimeout(() => { setErrorMessage(null) }, 5000)
         })
     }
