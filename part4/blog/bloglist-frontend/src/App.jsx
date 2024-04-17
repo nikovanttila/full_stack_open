@@ -13,7 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [userAuthorized, setUserAuthorized] = useState([])
   
   const blogFormRef = useRef()
 
@@ -32,17 +31,6 @@ const App = () => {
     }
   }, [])
 
-  const handleAuthorization = (blogs, user) => {
-    let authorized = {}
-    for (let i = 0; i < blogs.length; i++) {
-      let blog_id = blogs[i].id.toString()
-      let condition = user.username === blogs[i].user.username
-      authorized = { ...authorized, [blog_id]: condition }
-      console.log(authorized)
-    }
-    setUserAuthorized(authorized)
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -55,7 +43,6 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
-      handleAuthorization(blogs, user)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -83,8 +70,8 @@ const App = () => {
         .then(returnedBlog => {
           setSuccessMessage(`A new blog: ${returnedBlog.title}, by author: ${returnedBlog.author} added.`)
           setTimeout(() => { setSuccessMessage(null) }, 5000)
-          setBlogs(blogs.concat(returnedBlog))
-          handleAuthorization(blogs, user)
+          let returnedBlogNew = { ...returnedBlog, ['user']: { ['username']: user.username, ['name']: user.name } }
+          setBlogs(blogs.concat(returnedBlogNew))
         })
       .catch(error => {
           setErrorMessage(`Invalid blog parameters!`)
@@ -150,8 +137,7 @@ const App = () => {
           <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-          //<Blog key={blog.id} blog={blog} likeBlog={addLike} deleteBlog={removeBlog} user={user} />
-          <Blog key={blog.id} blog={blog} likeBlog={addLike} deleteBlog={removeBlog} authorized={userAuthorized[blog.id]} />
+          <Blog key={blog.id} blog={blog} likeBlog={addLike} deleteBlog={removeBlog} authorized={(user.username === blog.user.username)} />
         )}
       </div>
     </div>

@@ -2,12 +2,9 @@ import { useState } from 'react'
 
 const Blog = ({ blog, likeBlog, deleteBlog, authorized }) => {
   const [visible, setVisible] = useState(false)
-  //const [authorized, setAuthorized] = useState(user.username === blog.user.username)
-  //if (user.username === blog.user.username) setAuthorized(true)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-  //const showWhenAuthorized = { display: user.username === blog.user.username ? '' : 'none' }
   const showWhenAuthorized = { display: authorized ? '' : 'none' }
 
   const toggleVisibility = () => {
