@@ -1,10 +1,14 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, likeBlog }) => {
+const Blog = ({ blog, likeBlog, deleteBlog, authorized }) => {
   const [visible, setVisible] = useState(false)
+  //const [authorized, setAuthorized] = useState(user.username === blog.user.username)
+  //if (user.username === blog.user.username) setAuthorized(true)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+  //const showWhenAuthorized = { display: user.username === blog.user.username ? '' : 'none' }
+  const showWhenAuthorized = { display: authorized ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -21,6 +25,11 @@ const Blog = ({ blog, likeBlog }) => {
   const addLike = (event) => {
     event.preventDefault()
     likeBlog(blog.id)
+  }
+
+  const removeBlog = (event) => {
+    event.preventDefault()
+    deleteBlog(blog.id)
   }
 
   return (
@@ -41,32 +50,14 @@ const Blog = ({ blog, likeBlog }) => {
             </div>
             <div>{blog.author}</div>
           </div>
+          <div style={showWhenAuthorized}>
+            <button onClick={removeBlog}>remove</button>
+            </div>
         </div>
       </div>
     </div>
   )
 }
 
-const ErrorNotification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-  return (
-    <div className='error'>
-      {message}
-    </div>
-  )
-}
-
-const SuccessNotification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-  return (
-    <div className='success'>
-      {message}
-    </div>
-  )
-}
 
 export default Blog
